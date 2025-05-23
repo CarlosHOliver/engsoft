@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engenharia de Software: Uma Jornada Interativa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Visualization & Content Choices:
+        - Introdução: Text + Icons (HTML/CSS) for goals. Goal: Inform. Interaction: Hover. Justification: Quick visual summary.
+        - Requisitos: Text + Tabs (HTML/CSS/JS) for Functional/Non-Functional. Goal: Inform/Compare. Interaction: Click tabs. Justification: Clear separation of concepts.
+        - Ciclos de Vida: Text + Simplified Diagrams (HTML/CSS) + Bar Chart (Chart.js). Goal: Compare/Understand Change. Interaction: Buttons to switch model details, dynamic chart. Justification: Visual comparison of abstract models.
+        - Modelagem: Text + Simplified Visuals (HTML/CSS). Goal: Inform (basic). Interaction: Hover for tooltips. Justification: Introduce concepts without overwhelming detail.
+        - Qualidade e Testes: Text + Interactive Scenario (HTML/CSS/JS). Goal: Inform/Engage. Interaction: Clickable choices. Justification: Active learning for differentiating test types.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: #0284c7; /* sky-600 */
+            color: white;
+        }
+        .section-title {
+            border-bottom: 2px solid #0ea5e9; /* sky-500 */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .tab-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            background-color: #e2e8f0; /* slate-200 */
+            color: #334155; /* slate-700 */
+            transition: background-color 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #0ea5e9; /* sky-500 */
+            color: white;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* max-w-2xl */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .model-diagram {
+            border: 2px solid #cbd5e1; /* slate-300 */
+            padding: 1rem;
+            border-radius: 0.375rem;
+            text-align: center;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .model-diagram-step {
+            background-color: #e0f2fe; /* sky-100 */
+            color: #0c4a6e; /* sky-800 */
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 0.25rem;
+        }
+        .model-diagram-arrow {
+            font-size: 1.5rem;
+            color: #0ea5e9; /* sky-500 */
+            margin: 0.25rem 0;
+        }
+        .interactive-quiz-option {
+            cursor: pointer;
+            border: 1px solid #cbd5e1;
+            transition: background-color 0.2s;
+        }
+        .interactive-quiz-option:hover {
+            background-color: #f1f5f9; /* slate-100 */
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800">
+
+    <header class="bg-sky-700 text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center">
+            <h1 class="text-2xl font-bold">Engenharia de Software: Aula 6</h1>
+            <nav class="mt-2 sm:mt-0">
+                <ul class="flex space-x-2 sm:space-x-4 text-sm sm:text-base">
+                    <li><a href="#introducao" class="nav-link">Introdução</a></li>
+                    <li><a href="#requisitos" class="nav-link">Requisitos</a></li>
+                    <li><a href="#ciclos" class="nav-link">Ciclos de Vida</a></li>
+                    <li><a href="#modelagem" class="nav-link">Modelagem</a></li>
+                    <li><a href="#qualidade" class="nav-link">Qualidade e Testes</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <section id="introducao" class="mb-12 pt-16 -mt-16">
+            <h2 class="text-3xl font-semibold text-sky-600 section-title">Bem-vindos à Engenharia de Software!</h2>
+            <p class="mb-4 text-lg">
+                Esta seção introdutória explora o que é a Engenharia de Software e por que ela é crucial no desenvolvimento de sistemas complexos. Vamos descobrir como essa disciplina nos ajuda a construir softwares de maneira organizada, eficiente e com foco na qualidade, transformando ideias em soluções funcionais.
+            </p>
+            <p class="mb-6">
+                Imagine construir um arranha-céu sem uma planta ou um time de engenheiros. Seria caótico, arriscado e provavelmente resultaria em um desastre. O desenvolvimento de software complexo, como um aplicativo bancário ou um sistema de controle de tráfego aéreo, enfrenta desafios semelhantes. Envolve múltiplas pessoas, prazos apertados e recursos limitados. A Engenharia de Software é a disciplina que nos fornece os "planos", as ferramentas e as metodologias para navegar nessa complexidade.
+            </p>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <span class="text-3xl mr-3">💰</span>
+                        <h3 class="text-xl font-semibold text-sky-600">Reduzir Custos</h3>
+                    </div>
+                    <p>Otimizar o uso de recursos e evitar desperdícios durante o desenvolvimento.</p>
+                </div>
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <span class="text-3xl mr-3">⏱️</span>
+                        <h3 class="text-xl font-semibold text-sky-600">Acelerar Produção</h3>
+                    </div>
+                    <p>Entregar o software de forma mais rápida, atendendo às demandas do mercado.</p>
+                </div>
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <span class="text-3xl mr-3">⭐</span>
+                        <h3 class="text-xl font-semibold text-sky-600">Melhorar Qualidade</h3>
+                    </div>
+                    <p>Garantir que o software seja confiável, eficiente e atenda às necessidades dos usuários.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="requisitos" class="mb-12 pt-16 -mt-16">
+            <h2 class="text-3xl font-semibold text-sky-600 section-title">A Base de Tudo: Requisitos</h2>
+            <p class="mb-6 text-lg">
+                Os requisitos são o alicerce de qualquer projeto de software. Nesta seção, vamos entender o que são requisitos, a diferença entre funcionais e não funcionais, e como eles são levantados. A correta definição dos requisitos é crucial para o sucesso do projeto, pois eles guiam todo o processo de desenvolvimento.
+            </p>
+            <div class="mb-6">
+                <div class="flex space-x-2 mb-4 border-b border-slate-300">
+                    <button class="tab-button active" data-tab="funcionais">Funcionais</button>
+                    <button class="tab-button" data-tab="nao-funcionais">Não Funcionais</button>
+                    <button class="tab-button" data-tab="levantamento">Levantamento</button>
+                </div>
+                <div id="funcionais" class="tab-content active card">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-2">Requisitos Funcionais</h3>
+                    <p>Descrevem <strong class="text-sky-700">o que</strong> o sistema deve fazer, suas funcionalidades e comportamentos específicos. São as ações que o usuário poderá realizar ou que o sistema executará.</p>
+                    <p class="mt-2"><strong>Exemplo (Sistema Bancário):</strong></p>
+                    <ul class="list-disc list-inside ml-4 mt-1">
+                        <li>Permitir que o cliente consulte o saldo da conta.</li>
+                        <li>Permitir que o cliente realize transferências entre contas.</li>
+                        <li>O sistema deve gerar um extrato mensal para cada conta.</li>
+                    </ul>
+                </div>
+                <div id="nao-funcionais" class="tab-content card">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-2">Requisitos Não Funcionais</h3>
+                    <p>Definem <strong class="text-sky-700">como</strong> o sistema deve realizar suas funções. São restrições sobre o sistema ou qualidades que ele deve possuir, como desempenho, segurança, usabilidade, e portabilidade.</p>
+                    <p class="mt-2"><strong>Exemplo (Sistema Bancário):</strong></p>
+                    <ul class="list-disc list-inside ml-4 mt-1">
+                        <li>O sistema deve responder a uma consulta de saldo em menos de 2 segundos.</li>
+                        <li>O acesso aos dados do cliente deve ser protegido por criptografia.</li>
+                        <li>O sistema deve ser compatível com os navegadores Chrome, Firefox e Edge.</li>
+                        <li>A interface do usuário deve ser intuitiva para usuários com pouca experiência em tecnologia.</li>
+                    </ul>
+                </div>
+                <div id="levantamento" class="tab-content card">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-2">Levantamento de Requisitos</h3>
+                    <p>É o processo de descobrir, analisar, documentar e validar os requisitos do sistema. Envolve diversas técnicas, sendo a <strong class="text-sky-700">entrevista</strong> uma das mais comuns.</p>
+                    <p class="mt-2"><strong>Técnica de Entrevista:</strong></p>
+                    <ul class="list-disc list-inside ml-4 mt-1">
+                        <li>Conversa direta com os stakeholders (clientes, usuários) para entender suas necessidades.</li>
+                        <li>Requer planejamento cuidadoso das perguntas.</li>
+                        <li>O entrevistador deve manter a neutralidade, evitando induzir respostas ou propor soluções prematuramente.</li>
+                        <li>O resultado é frequentemente um <strong class="text-sky-700">Documento de Requisitos</strong> (ex: padrão IEEE 830), que serve como um "contrato" entre o cliente e a equipe de desenvolvimento.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="ciclos" class="mb-12 pt-16 -mt-16">
+            <h2 class="text-3xl font-semibold text-sky-600 section-title">A Jornada da Construção: Ciclos de Vida</h2>
+            <p class="mb-6 text-lg">
+                O ciclo de vida de um software descreve as etapas pelas quais um projeto passa, desde a concepção até a manutenção. Diferentes modelos de ciclo de vida oferecem abordagens variadas para gerenciar essas etapas. Vamos explorar os modelos Clássico (Cascata), Evolucionário e Espiral, e entender suas características através de um comparativo visual.
+            </p>
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div>
+                    <div class="card mb-6">
+                        <h3 class="text-xl font-semibold text-sky-600 mb-2">Modelo Clássico (Cascata)</h3>
+                        <p class="mb-3">Progressão linear e sequencial das fases: Requisitos → Design → Implementação → Testes → Manutenção. Pouca flexibilidade para mudanças após o início de uma fase.</p>
+                        <div class="model-diagram">
+                            <div class="model-diagram-step">Análise de Requisitos</div>
+                            <div class="model-diagram-arrow">↓</div>
+                            <div class="model-diagram-step">Design (Projeto)</div>
+                            <div class="model-diagram-arrow">↓</div>
+                            <div class="model-diagram-step">Codificação</div>
+                            <div class="model-diagram-arrow">↓</div>
+                            <div class="model-diagram-step">Testes</div>
+                            <div class="model-diagram-arrow">↓</div>
+                            <div class="model-diagram-step">Manutenção</div>
+                        </div>
+                        <p class="mt-3"><strong class="text-sky-700">Ideal para:</strong> Projetos com requisitos bem definidos e estáveis.</p>
+                    </div>
+                    <div class="card mb-6">
+                        <h3 class="text-xl font-semibold text-sky-600 mb-2">Modelo Evolucionário (Incremental)</h3>
+                        <p class="mb-3">Desenvolvimento de versões incrementais do software. Cada incremento adiciona funcionalidade. Permite feedback contínuo e adaptação.</p>
+                        <div class="model-diagram">
+                            <div class="model-diagram-step">Identificar Requisitos Iniciais</div>
+                            <div class="model-diagram-arrow">🔄</div>
+                            <div class="model-diagram-step">Construir Versão Interativa (Protótipo)</div>
+                            <div class="model-diagram-arrow">🔄</div>
+                            <div class="model-diagram-step">Avaliar / (Re)Design</div>
+                            <div class="model-diagram-arrow">↓</div>
+                            <div class="model-diagram-step">Produto Final (após várias iterações)</div>
+                        </div>
+                         <p class="mt-3"><strong class="text-sky-700">Ideal para:</strong> Projetos onde os requisitos não são totalmente conhecidos no início ou podem mudar.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-xl font-semibold text-sky-600 mb-2">Modelo Espiral</h3>
+                        <p class="mb-3">Combina desenvolvimento iterativo com gerenciamento de riscos. Cada ciclo da espiral passa por: planejamento, análise de riscos, engenharia e avaliação.</p>
+                         <div class="model-diagram">
+                            <div class="model-diagram-step">1. Definição de Objetivos</div>
+                            <div class="model-diagram-arrow">⤵</div>
+                            <div class="model-diagram-step">2. Avaliação e Redução de Riscos</div>
+                            <div class="model-diagram-arrow">⤵</div>
+                            <div class="model-diagram-step">3. Desenvolvimento e Validação</div>
+                            <div class="model-diagram-arrow">⤵</div>
+                            <div class="model-diagram-step">4. Planejamento da Próxima Fase</div>
+                             <div class="model-diagram-arrow">🔄 (Repete)</div>
+                        </div>
+                        <p class="mt-3"><strong class="text-sky-700">Ideal para:</strong> Projetos grandes, complexos e com altos riscos.</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="card">
+                        <h3 class="text-xl font-semibold text-sky-600 mb-4">Comparativo Conceitual dos Modelos</h3>
+                        <p class="mb-4">Este gráfico ilustra conceitualmente como os modelos se comparam em termos de flexibilidade a mudanças e nível de controle/formalismo.</p>
+                        <div class="chart-container bg-white p-4 rounded-lg shadow">
+                            <canvas id="ciclosChart"></canvas>
+                        </div>
+                        <p class="mt-4 text-sm text-slate-600">Nota: Os valores são representações conceituais para fins didáticos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="modelagem" class="mb-12 pt-16 -mt-16">
+            <h2 class="text-3xl font-semibold text-sky-600 section-title">Desenhando o Software: Modelagem</h2>
+            <p class="mb-6 text-lg">
+                A modelagem de software é como criar a planta de uma casa antes de construí-la. Ela nos ajuda a visualizar, entender e comunicar a estrutura e o comportamento do sistema. Vamos conhecer brevemente duas ferramentas clássicas: Diagrama de Fluxo de Dados (DFD) e Modelo Entidade-Relacionamento (MER).
+            </p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-2">Diagrama de Fluxo de Dados (DFD)</h3>
+                    <p class="mb-3">Mostra como os dados se movem através de um sistema: de onde vêm, para onde vão, onde são armazenados e quais processos os transformam.</p>
+                    <div class="model-diagram p-4">
+                        <div class="text-sm text-slate-700">Exemplo Simplificado de DFD: Sistema de Pedidos</div>
+                        <div class="mt-2 p-2 bg-yellow-100 border border-yellow-300 rounded">Entidade Externa: Cliente</div>
+                        <div class="model-diagram-arrow text-yellow-500">↓ <span class="text-xs">(Solicitação do Pedido)</span></div>
+                        <div class="p-2 bg-green-100 border border-green-300 rounded">Processo: Construir Pedido</div>
+                        <div class="model-diagram-arrow text-green-500">↓ <span class="text-xs">(Pedido Completo)</span></div>
+                        <div class="p-2 bg-blue-100 border border-blue-300 rounded">Armazenamento: Banco de Dados de Mercadorias</div>
+                        <div class="text-xs mt-1 text-slate-500">(Consultado pelo processo "Consulta Mercadorias", que alimenta "Construir Pedido")</div>
+                    </div>
+                    <p class="mt-3"><strong class="text-sky-700">Foco:</strong> Fluxo e transformação de dados.</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-2">Modelo Entidade-Relacionamento (MER)</h3>
+                    <p class="mb-3">Usado principalmente para modelar a estrutura de bancos de dados. Define as "entidades" (coisas importantes sobre as quais guardamos informações) e como elas se "relacionam".</p>
+                     <div class="model-diagram p-4">
+                        <div class="text-sm text-slate-700">Exemplo Simplificado de MER: Loja Online</div>
+                        <div class="mt-2 p-2 bg-purple-100 border border-purple-300 rounded">Entidade: Cliente</div>
+                        <div class="model-diagram-arrow text-purple-500">↕ <span class="text-xs">(1 Cliente pode ter N Pedidos)</span></div>
+                        <div class="p-2 bg-pink-100 border border-pink-300 rounded">Entidade: Pedido</div>
+                        <div class="model-diagram-arrow text-pink-500">↕ <span class="text-xs">(N Pedidos podem conter M Produtos)</span></div>
+                         <div class="p-2 bg-teal-100 border border-teal-300 rounded">Entidade: Produto</div>
+                    </div>
+                    <p class="mt-3"><strong class="text-sky-700">Foco:</strong> Estrutura dos dados e seus relacionamentos.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="qualidade" class="mb-12 pt-16 -mt-16">
+            <h2 class="text-3xl font-semibold text-sky-600 section-title">Garantindo que Funcione: Qualidade e Testes</h2>
+            <p class="mb-6 text-lg">
+                A qualidade do software não é um acidente; é resultado de um esforço planejado. Nesta seção, abordaremos a Garantia de Qualidade, incluindo Verificação e Validação, e os tipos de testes Caixa Branca e Caixa Preta. Testaremos seu entendimento com um pequeno cenário interativo!
+            </p>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-2">Garantia de Qualidade</h3>
+                    <p>Conjunto de atividades planejadas e sistemáticas para assegurar que o software atenda aos padrões de qualidade e aos requisitos especificados.</p>
+                    <ul class="list-disc list-inside ml-4 mt-2">
+                        <li><strong class="text-sky-700">Verificação:</strong> "Estamos construindo o produto certo?" Avalia se o software está sendo desenvolvido de acordo com as especificações e padrões definidos em cada fase. (Ex: Revisão de código, inspeção de documentos de design).</li>
+                        <li><strong class="text-sky-700">Validação:</strong> "Construímos o produto certo?" Avalia se o software final atende às necessidades e expectativas do usuário. (Ex: Testes de aceitação pelo cliente).</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-2">Tipos de Testes</h3>
+                     <p class="mb-2"><strong class="text-sky-700">Teste de Caixa Branca:</strong></p>
+                    <p class="mb-3">O testador conhece a estrutura interna e o código do software. Testa os caminhos lógicos, estruturas de dados e o funcionamento interno dos componentes. É como um mecânico olhando o motor do carro.</p>
+                    <p><strong class="text-sky-700">Teste de Caixa Preta (Funcional):</strong></p>
+                    <p>O testador NÃO conhece a estrutura interna. Testa o software com base em suas especificações funcionais, verificando se as entradas produzem as saídas esperadas. É como um motorista testando se o carro acelera, freia e vira corretamente.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold text-sky-600 mb-3">Cenário Interativo: Que tipo de teste é este?</h3>
+                <p class="mb-3" id="quiz-question">Um testador recebe uma nova funcionalidade de "login" e um documento com os critérios: "Usuário deve conseguir logar com email e senha válidos", "Sistema deve mostrar mensagem de erro para credenciais inválidas". O testador não tem acesso ao código fonte. Ele cria casos de teste com emails válidos/inválidos e senhas corretas/incorretas para verificar o comportamento.</p>
+                <div class="space-y-2">
+                    <div class="interactive-quiz-option p-3 rounded border" onclick="checkAnswer('preta')">Teste de Caixa Preta</div>
+                    <div class="interactive-quiz-option p-3 rounded border" onclick="checkAnswer('branca')">Teste de Caixa Branca</div>
+                </div>
+                <p id="quiz-feedback" class="mt-3 font-medium"></p>
+            </div>
+        </section>
+         <footer class="text-center py-8 text-slate-600 border-t border-slate-300">
+            <p>&copy; <span id="currentYear"></span> Engenharia de Software - Aula 6. Conteúdo adaptado para fins didáticos.</p>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Smooth scrolling for nav links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        // Calculate offset for fixed header
+                        const headerOffset = document.querySelector('header').offsetHeight;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth"
+                        });
+                        
+                        // Update active nav link
+                        document.querySelectorAll('nav .nav-link').forEach(link => link.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            // Tabs functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.dataset.tab;
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    tabContents.forEach(content => {
+                        if (content.id === targetTab) {
+                            content.classList.add('active');
+                        } else {
+                            content.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // Ciclos de Vida Chart
+            const ctxCiclos = document.getElementById('ciclosChart');
+            if (ctxCiclos) {
+                new Chart(ctxCiclos, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Cascata', 'Evolucionário', 'Espiral'],
+                        datasets: [{
+                            label: 'Flexibilidade a Mudanças (Conceitual)',
+                            data: [2, 4, 5], // Escala 1-5
+                            backgroundColor: 'rgba(56, 189, 248, 0.7)', // sky-400
+                            borderColor: 'rgba(14, 116, 144, 1)', // sky-700
+                            borderWidth: 1
+                        }, {
+                            label: 'Controle / Formalismo (Conceitual)',
+                            data: [5, 3, 4], // Escala 1-5
+                            backgroundColor: 'rgba(240, 171, 252, 0.7)', // fuchsia-300
+                            borderColor: 'rgba(162, 28, 175, 1)', // fuchsia-700
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 5,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y + ' de 5';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            },
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeInOutQuart'
+                        }
+                    }
+                });
+            }
+            
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        });
+
+        // Interactive Quiz Functionality
+        function checkAnswer(selectedAnswer) {
+            const feedbackEl = document.getElementById('quiz-feedback');
+            // The correct answer for the provided scenario is 'Teste de Caixa Preta'
+            if (selectedAnswer === 'preta') {
+                feedbackEl.textContent = "Correto! Este é um exemplo de Teste de Caixa Preta, pois o testador foca na funcionalidade (o que o sistema faz) sem conhecer a estrutura interna.";
+                feedbackEl.className = 'mt-3 font-medium text-green-600';
+            } else {
+                feedbackEl.textContent = "Incorreto. Tente novamente! Lembre-se: Caixa Branca olha 'por dentro' (código), Caixa Preta olha 'por fora' (funcionalidade).";
+                feedbackEl.className = 'mt-3 font-medium text-red-600';
+            }
+        }
+    </script>
+</body>
+</html>
